@@ -4,7 +4,8 @@
   "description": "Telegram bot to remind SHN people at Holiday Inn Clarke Quay to order their food and not go hungry!",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
