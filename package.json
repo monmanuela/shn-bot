@@ -27,6 +27,7 @@
     "eslint-plugin-import": "^2.20.2"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "node-telegram-bot-api": "^0.40.0"
   }
 }
