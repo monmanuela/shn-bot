@@ -1,0 +1,22 @@
+{
+  "name": "shn",
+  "version": "1.0.0",
+  "description": "Telegram bot to remind SHN people at Holiday Inn Clarke Quay to order their food and not go hungry!",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monmanuela/shn-bot.git"
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "Monika Manuela Hengki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/monmanuela/shn-bot/issues"
+  },
+  "homepage": "https://github.com/monmanuela/shn-bot#readme"
+}
