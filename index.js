@@ -6,11 +6,19 @@ dotenv.config();
 const TelegramBot = require('node-telegram-bot-api');
 
 const port = process.env.PORT || 443;
-const host = '0.0.0.0';
+const host = process.env.HOST || '0.0.0.0';
+const useWebhook = process.env.USE_WEBHOOK;
 const externalUrl = 'https://shn-bot.herokuapp.com/';
 const token = process.env.BOT_TOKEN;
-const bot = new TelegramBot(token, { webHook: { port, host } });
-bot.setWebHook(`${externalUrl}:443/bot${token}`);
+let bot;
+if (useWebhook) {
+  console.log('Using webhook');
+  bot = new TelegramBot(token, { webHook: { port, host } });
+  bot.setWebHook(`${externalUrl}:443/bot${token}`);
+} else {
+  console.log('Using polling');
+  bot = new TelegramBot(token, { polling: true });
+}
 
 const db = require('./firestore');
 
