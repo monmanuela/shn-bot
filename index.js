@@ -9,6 +9,8 @@ const token = process.env.BOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
+const db = require('./firestore');
+
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
@@ -25,13 +27,33 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.onText(/\/subscribe/, (msg) => {
-  // TODO: Get msg.chat.id, store in db
-  bot.sendMessage(msg.chat.id, 'Subscribed!');
+  const chatId = msg.chat.id;
+  db.collection('subscribers').doc(chatId.toString()).set({
+    message_id: chatId,
+    subscribing: true,
+  })
+    .then(() => {
+      console.log(`Added to subscriber: ${msg.from.first_name}, ID: ${chatId}`);
+      bot.sendMessage(chatId, 'Subscribed!');
+    })
+    .catch((error) => {
+      console.error('Error adding subscriber: ', error);
+    });
 });
 
 bot.onText(/\/unsubscribe/, (msg) => {
-  // TODO: Delete msg.chat.id from db
-  bot.sendMessage(msg.chat.id, 'Unsubscribed!');
+  const chatId = msg.chat.id;
+  db.collection('subscribers').doc(chatId.toString()).set({
+    message_id: chatId,
+    subscribing: false,
+  })
+      .then(() => {
+        bot.sendMessage(chatId, 'Unsubscribed!');
+        console.log(`Removed from subscriber: ${msg.from.first_name}, ID: ${chatId}`);
+      })
+      .catch((error) => {
+        console.error('Error removing subscriber: ', error);
+      });
 });
 
 bot.on('message', (msg) => {
