@@ -19,7 +19,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 
 bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, "<b>Welcome!</b>\nI'll remind you to order your meals every day when the form is open so you won't go hungry!", { parse_mode: 'HTML' });
+  bot.sendMessage(msg.chat.id, "<b>Welcome!</b>\nI'll remind you to order your meals every day so you won't go hungry!", { parse_mode: 'HTML' });
 });
 
 bot.on('message', (msg) => {
