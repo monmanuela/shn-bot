@@ -5,10 +5,12 @@ dotenv.config();
 
 const TelegramBot = require('node-telegram-bot-api');
 
+const port = process.env.PORT || 443;
+const host = '0.0.0.0';
+const externalUrl = 'https://shn-bot.herokuapp.com/';
 const token = process.env.BOT_TOKEN;
-
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, { webHook: { port, host } });
+bot.setWebHook(`${externalUrl}:443/bot${token}`);
 
 const db = require('./firestore');
 
