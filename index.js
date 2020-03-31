@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const schedule = require('node-schedule');
 
 dotenv.config();
 
@@ -47,14 +48,36 @@ bot.onText(/\/unsubscribe/, (msg) => {
     message_id: chatId,
     subscribing: false,
   })
-      .then(() => {
-        bot.sendMessage(chatId, 'Unsubscribed!');
-        console.log(`Removed from subscriber: ${msg.from.first_name}, ID: ${chatId}`);
-      })
-      .catch((error) => {
-        console.error('Error removing subscriber: ', error);
-      });
+    .then(() => {
+      bot.sendMessage(chatId, 'Unsubscribed!');
+      console.log(`Removed from subscriber: ${msg.from.first_name}, ID: ${chatId}`);
+    })
+    .catch((error) => {
+      console.error('Error removing subscriber: ', error);
+    });
 });
+
+const remindSubscribers = () => {
+  db.collection('subscribers').where('subscribing', '==', true).get()
+    .then((snapshot) => {
+      const subscribers = [];
+      snapshot.forEach((doc) => {
+        subscribers.push(doc.data().message_id);
+      });
+      subscribers.forEach((chatId) => {
+        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals <a href="http://gg.gg/innroommenu">here</a> :)', { parse_mode: 'HTML' });
+      });
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+    });
+};
+
+// First reminder at 07:00 UTC (3pm SGT)
+schedule.scheduleJob('0 7 * * *', remindSubscribers);
+
+// Second reminder at 09:00 UTC (5pm SGT)
+schedule.scheduleJob('0 9 * * *', remindSubscribers);
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
