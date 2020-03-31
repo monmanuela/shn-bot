@@ -19,7 +19,19 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 
 bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, "<b>Welcome!</b>\nI'll remind you to order your meals every day so you won't go hungry!", { parse_mode: 'HTML' });
+  bot.sendMessage(msg.chat.id, '<b>Welcome!</b>\nType <code>/subscribe</code> to get daily reminders to order '
+      + "food so you won't go hungry!\nType <code>/unsubscribe</code> if you no longer want to receive the reminders.",
+  { parse_mode: 'HTML' });
+});
+
+bot.onText(/\/subscribe/, (msg) => {
+  // TODO: Get msg.chat.id, store in db
+  bot.sendMessage(msg.chat.id, 'Subscribed!');
+});
+
+bot.onText(/\/unsubscribe/, (msg) => {
+  // TODO: Delete msg.chat.id from db
+  bot.sendMessage(msg.chat.id, 'Unsubscribed!');
 });
 
 bot.on('message', (msg) => {
