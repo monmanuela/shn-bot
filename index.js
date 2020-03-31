@@ -70,6 +70,8 @@ schedule.scheduleJob('0 7 * * *', remindSubscribers);
 // Second reminder at 09:00 UTC (5pm SGT)
 schedule.scheduleJob('0 9 * * *', remindSubscribers);
 
+// TODO: Don't ping Heroku dyno at 12am - 7am
+
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
 
