@@ -1,9 +1,10 @@
 const dotenv = require('dotenv');
 const schedule = require('node-schedule');
+const TelegramBot = require('node-telegram-bot-api');
+const stickers = require('./stickers');
 
 dotenv.config();
 
-const TelegramBot = require('node-telegram-bot-api');
 
 const port = process.env.PORT || 443;
 const host = process.env.HOST || '0.0.0.0';
@@ -66,7 +67,10 @@ const remindSubscribers = () => {
         subscribers.push(doc.data().message_id);
       });
       subscribers.forEach((chatId) => {
-        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals <a href="http://gg.gg/innroommenu">here</a> :)', { parse_mode: 'HTML' });
+        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals <a href="http://gg.gg/innroommenu">here</a> :)', { parse_mode: 'HTML' })
+          .then(() => bot.sendSticker(
+            chatId, stickers.reminders[Math.floor(Math.random() * stickers.reminders.length)],
+          ));
       });
     })
     .catch((err) => {
@@ -80,15 +84,21 @@ schedule.scheduleJob('0 7 * * *', remindSubscribers);
 // Second reminder at 09:00 UTC (5pm SGT)
 schedule.scheduleJob('0 9 * * *', remindSubscribers);
 
-// TODO: Don't ping Heroku dyno at 12am - 7am
-
-bot.on('message', (msg) => {
+bot.on('text', (msg) => {
   const chatId = msg.chat.id;
 
   const greetings = ['hi', 'hello', 'hey'];
   greetings.forEach((greeting) => {
     if (msg.text.toString().toLowerCase().indexOf(greeting) === 0) {
-      bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`);
+      bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`)
+        .then(() => bot.sendSticker(
+          chatId, stickers.greetings[Math.floor(Math.random() * stickers.greetings.length)],
+        ));
     }
   });
+});
+
+// To get sticker ID
+bot.on('sticker', (msg) => {
+  console.log(msg.sticker.file_id);
 });
