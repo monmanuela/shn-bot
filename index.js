@@ -12,15 +12,6 @@ const bot = new TelegramBot(token, { polling: true });
 
 const db = require('./firestore');
 
-// Matches "/echo [whatever]"
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  const chatId = msg.chat.id;
-  const resp = match[1]; // the captured "whatever"
-
-  // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
-});
-
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, '<b>Welcome!</b>\nType <code>/subscribe</code> to get daily reminders to order '
       + "food so you won't go hungry!\nType <code>/unsubscribe</code> if you no longer want to receive the reminders.",
