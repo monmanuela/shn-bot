@@ -74,7 +74,8 @@ const remindSubscribers = () => {
         subscribers.push(doc.data().message_id);
       });
       subscribers.forEach((chatId) => {
-        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals <a href="http://gg.gg/innroommenu">here</a> :)', { parse_mode: 'HTML' })
+        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals from the correct hotel! :)\n' +
+          '- <a href="https://docs.google.com/forms/d/e/1FAIpQLSelCkJ-ubT_LB6O1RjqiRYgf9CMBss13-Osqta8zbUyYe37lA/viewform">Swissotel Stamford</a>', { parse_mode: 'HTML' })
           .then(() => bot.sendSticker(
             chatId, stickers.reminders[Math.floor(Math.random() * stickers.reminders.length)],
           ));
@@ -85,8 +86,8 @@ const remindSubscribers = () => {
     });
 };
 
-// First reminder at 07:00 UTC (3pm SGT)
-schedule.scheduleJob('0 7 * * *', remindSubscribers);
+// First reminder at 03:00 UTC (11am SGT)
+schedule.scheduleJob('0 3 * * *', remindSubscribers);
 
 // Second reminder at 09:00 UTC (5pm SGT)
 schedule.scheduleJob('0 9 * * *', remindSubscribers);
