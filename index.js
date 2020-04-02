@@ -2,9 +2,9 @@ const dotenv = require('dotenv');
 const schedule = require('node-schedule');
 const TelegramBot = require('node-telegram-bot-api');
 const stickers = require('./stickers');
+const http = require('http');
 
 dotenv.config();
-
 
 const port = process.env.PORT || 443;
 const host = process.env.HOST || '0.0.0.0';
@@ -20,6 +20,12 @@ if (useWebhook) {
   console.log('Using polling');
   bot = new TelegramBot(token, { polling: true });
 }
+
+// Ping Heroku app every 15 minutes to prevent idling
+setInterval(function() {
+  http.get("http://shn-bot.herokuapp.com/");
+  console.log("ping");
+}, 900000); // every 15 minutes (900000)
 
 const db = require('./firestore');
 
