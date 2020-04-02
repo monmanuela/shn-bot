@@ -29,6 +29,7 @@ setInterval(function() {
 
 const db = require('./firestore');
 
+const subscribersCollection = 'subscribers-new';
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, '<b>Welcome!</b>\nType <code>/subscribe</code> to get daily reminders to order '
       + "food so you won't go hungry!\nType <code>/unsubscribe</code> if you no longer want to receive the reminders.",
@@ -37,7 +38,7 @@ bot.onText(/\/start/, (msg) => {
 
 bot.onText(/\/subscribe/, (msg) => {
   const chatId = msg.chat.id;
-  db.collection('subscribers').doc(chatId.toString()).set({
+  db.collection(subscribersCollection).doc(chatId.toString()).set({
     message_id: chatId,
     subscribing: true,
   })
@@ -52,7 +53,7 @@ bot.onText(/\/subscribe/, (msg) => {
 
 bot.onText(/\/unsubscribe/, (msg) => {
   const chatId = msg.chat.id;
-  db.collection('subscribers').doc(chatId.toString()).set({
+  db.collection(subscribersCollection).doc(chatId.toString()).set({
     message_id: chatId,
     subscribing: false,
   })
