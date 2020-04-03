@@ -1,8 +1,8 @@
 const dotenv = require('dotenv');
 const schedule = require('node-schedule');
 const TelegramBot = require('node-telegram-bot-api');
-const stickers = require('./stickers');
 const http = require('http');
+const stickers = require('./stickers');
 
 dotenv.config();
 
@@ -22,9 +22,9 @@ if (useWebhook) {
 }
 
 // Ping Heroku app every 15 minutes to prevent idling
-setInterval(function() {
-  http.get("http://shn-bot.herokuapp.com/");
-  console.log("ping");
+setInterval(() => {
+  http.get('http://shn-bot.herokuapp.com/');
+  console.log('ping');
 }, 900000); // every 15 minutes (900000)
 
 const db = require('./firestore');
@@ -33,7 +33,8 @@ const subscribersCollection = 'subscribers-new';
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, '<b>Welcome!</b>\nType <code>/subscribe</code> to get daily reminders to order '
       + "food so you won't go hungry!\nType <code>/unsubscribe</code> if you no longer want to receive the reminders.",
-  { parse_mode: 'HTML' });
+  { parse_mode: 'HTML' })
+    .catch((err) => console.error('Error sending message', err));
 });
 
 bot.onText(/\/subscribe/, (msg) => {
@@ -44,11 +45,10 @@ bot.onText(/\/subscribe/, (msg) => {
   })
     .then(() => {
       console.log(`Added to subscriber: ${msg.from.first_name}, ID: ${chatId}`);
-      bot.sendMessage(chatId, 'Subscribed!');
+      bot.sendMessage(chatId, 'Subscribed!')
+        .catch((err) => console.error('Error sending message', err));
     })
-    .catch((error) => {
-      console.error('Error adding subscriber: ', error);
-    });
+    .catch((err) => console.error('Error adding subscriber: ', err));
 });
 
 bot.onText(/\/unsubscribe/, (msg) => {
@@ -58,12 +58,11 @@ bot.onText(/\/unsubscribe/, (msg) => {
     subscribing: false,
   })
     .then(() => {
-      bot.sendMessage(chatId, 'Unsubscribed!');
+      bot.sendMessage(chatId, 'Unsubscribed!')
+        .catch((err) => console.error('Error sending message', err));
       console.log(`Removed from subscriber: ${msg.from.first_name}, ID: ${chatId}`);
     })
-    .catch((error) => {
-      console.error('Error removing subscriber: ', error);
-    });
+    .catch((err) => console.error('Error removing subscriber: ', err));
 });
 
 const remindSubscribers = () => {
@@ -74,16 +73,18 @@ const remindSubscribers = () => {
         subscribers.push(doc.data().message_id);
       });
       subscribers.forEach((chatId) => {
-        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals from the correct hotel! :)\n' +
-          '- <a href="https://docs.google.com/forms/d/e/1FAIpQLSelCkJ-ubT_LB6O1RjqiRYgf9CMBss13-Osqta8zbUyYe37lA/viewform">Swissotel Stamford</a>', { parse_mode: 'HTML' })
-          .then(() => bot.sendSticker(
-            chatId, stickers.reminders[Math.floor(Math.random() * stickers.reminders.length)],
-          ));
+        bot.sendMessage(chatId, 'Hey, don\'t forget to order your meals from the correct hotel! :)\n'
+          + '- <a href="https://docs.google.com/forms/d/e/1FAIpQLSelCkJ-ubT_LB6O1RjqiRYgf9CMBss13-Osqta8zbUyYe37lA/viewform">Swissotel Stamford</a>', { parse_mode: 'HTML' })
+          .then(() => {
+            bot.sendSticker(
+              chatId, stickers.reminders[Math.floor(Math.random() * stickers.reminders.length)],
+            )
+              .catch((err) => console.error('Error sending sticker', err));
+          })
+          .catch((err) => console.error('Error sending message', err));
       });
     })
-    .catch((err) => {
-      console.log('Error getting documents', err);
-    });
+    .catch((err) => console.error('Error getting documents', err));
 };
 
 // First reminder at 03:00 UTC (11am SGT)
@@ -101,7 +102,8 @@ bot.on('text', (msg) => {
       bot.sendMessage(chatId, `Hello ${msg.from.first_name}!`)
         .then(() => bot.sendSticker(
           chatId, stickers.greetings[Math.floor(Math.random() * stickers.greetings.length)],
-        ));
+        ))
+        .catch((err) => console.error('Error sending message', err));
     }
   });
 });
