@@ -66,7 +66,7 @@ bot.onText(/\/unsubscribe/, (msg) => {
 });
 
 const remindSubscribers = () => {
-  db.collection('subscribers').where('subscribing', '==', true).get()
+  db.collection(subscribersCollection).where('subscribing', '==', true).get()
     .then((snapshot) => {
       const subscribers = [];
       snapshot.forEach((doc) => {
