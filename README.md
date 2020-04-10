@@ -1,6 +1,9 @@
 # SHN Bot
 
-Telegram bot to remind people doing SHN in Holiday Inn Clarke Quay to order their meals daily.
+Telegram bot to remind people doing SHN in various hotels to order their meals daily.
+
+## Try me!
+`@SHNMealBot` on Telegram
 
 ## Commands
 - `/subscribe`: subscribe for daily reminders to order meals
